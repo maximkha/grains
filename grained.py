@@ -2,6 +2,15 @@ import numpy as np
 from PIL import Image
 
 import random
+import argparse
+
+parser = argparse.ArgumentParser(description='Run grain filter on a image')
+parser.add_argument('file', type=str, help="The image to process")
+parser.add_argument('--invert', action="store_true", default=False, help="Whether to invert the image")
+parser.add_argument('--tilesize', type=int, default=3, help="The tile size (tiles are square).")
+args = parser.parse_args()
+# print(args)
+# exit()
 
 def pil_grid(images, max_horiz=np.iinfo(int).max):
     n_images = len(images)
@@ -17,12 +26,19 @@ def pil_grid(images, max_horiz=np.iinfo(int).max):
         im_grid.paste(im, (h_sizes[i % n_horiz], v_sizes[i // n_horiz]))
     return im_grid
 
-img = Image.open("IMG-5294.jpg")
+import pathlib
+
+if not pathlib.Path(args.file).exists():
+    print("The specified file does not exist!")
+    exit()
+
+img = Image.open(args.file)
 gimg = img.convert('L')
 im = (np.array(gimg)/255.)
+if args.invert: im = 1 - im
 print(im.shape)
 #img.histogram()
-M = 3
+M = args.tilesize
 N = M
 tiles = [im[x:x+M,y:y+N] for x in range(0,im.shape[0],M) for y in range(0,im.shape[1],N)]
 print(tiles[0].shape)
