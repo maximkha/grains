@@ -51,7 +51,7 @@ for bright in brights:
     ntile = np.random.rand(M, N)
     ntile = ntile < bright
     ntile = ntile.astype(float)
-    ntile = (ntile*255).astype(int)
+    ntile = (ntile*255).astype(np.uint8)
     ntiles.append(Image.fromarray(ntile))
 
 xtiles = np.ceil(im.shape[1] / M).astype(int)
